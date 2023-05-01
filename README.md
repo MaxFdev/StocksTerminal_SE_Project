@@ -10,83 +10,85 @@
 
 ---
 
-Needs:
+> Needs Being Met:
 
->Who would use it?
+Ease of access to current and live stock data at a moment's notice.
 
-Anyone from brokers trying to get a quick breakdown of a certain stock to everyday people trying to educate themselves on current public finances to software engineers trying to simplify stock data.
+> Who would use it?
+
+Anyone from brokers trying to get a quick breakdown of a certain stock to everyday people trying to educate themselves on current public finances, and software engineers trying to simplify stock data.
+
+This software can be particularly useful for automation. For example, someone can make a bash script that can send email notifications when certain stock data triggers a defined threshold.
 
 > What functions are provided?
 
- A "get" for general information, as well as a storage for previously accessed stocks that it auto-refreshes. It will also allow for summarizing tools in order to isolate prioritized information.
+This software will be capable of retrieving all sorts of data with regard to stock ticker symbols. The data can be provide as a querry - whereby a single request is sent for the current market data for a stock (or stocks), or live data - which will continue to update the data in the CLI every decided interval.
+
+It will also allow for summarizing tools in order to isolate and prioritize the most wanted information. Additionally, there will be functionality to querry multiple stock tickers and get a list of formatted data for each.
 
 > Why?
 
 To simplify and organize the information-getting process for stock data.
-  
+
 > How?
 
-1. Run the program .jar file.
+1.  Run the program .jar file.
 
-2. make a call to the program using "stock" as the first item of your args.
+2.  make a call to the program using "stock" as the first item of your args.
 
-3. use one of the following commands to call and retrieve data:
+3.  use one of the following commands to call and retrieve data:
 
         (a) "help" - prints a list of available commands, requests, and options, as well as a short description of each, akin to this list.
 
         (b) "[stock_symbol(s)] [live /or/ current] [requests(s)]" - executes the given command(s) on the stock symbol provided - separate symbols and requests with commas. Example provided:
-            "aapl, amzn -pov" - fetches the price, open 
-            price, and volume for aapl and amzn (empty 
+            "aapl, amzn -pov" - fetches the price, open
+            price, and volume for aapl and amzn (empty
             request status assumes current)
 
         (c) requests and their uses:
-            1. no request / "" - assumes all other 
+            1. no request / "" - assumes all other
             requests
             2. open / "o" - day's open price
             3. high / "h" - day's high price
             4. low / "l" - day's low price
             5. volume / "v" - stock volume
-            6. latest trading day / "t" - last day that 
+            6. latest trading day / "t" - last day that
             trading was available
-            7. previous close / "p" - the previous 
+            7. previous close / "p" - the previous
             trading day's closing price
-            8. change / "c" - change in price since day's 
+            8. change / "c" - change in price since day's
             open
-            9. change in percent / "r" - change in price 
-            since day's open represented as a 
+            9. change in percent / "r" - change in price
+            since day's open represented as a
             percentage.
 
-
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
-
 
 Identify what need the software is meeting
 
 ---
 
-
 > Ideas/Functionality:
 
-- Query; Commands to get data (specify wanted data)
-    
+-   Query; Commands to get data (specify wanted data)
+
     Wanted data (and usage) includes:
 
-        1.symbol - the given
+          1.symbol - the given
 
-
-- Live; Live command (updates info every certain amount of time)
-- `List`; List (lists multiple stocks that are specified)
-- Help; Help (get help)
+-   Live; Live command (updates info every certain amount of time)
+-   `List`; List (lists multiple stocks that are specified)
+-   Help; Help (get help)
 
 > Stock data we can get:
 
-01. symbol
-02. open
-03. high
-04. low
-05. price
-06. volume
-07. latest trading day
-08. previous close
-09. change
+1.  symbol
+2.  open
+3.  high
+4.  low
+5.  price
+6.  volume
+7.  latest trading day
+8.  previous close
+9.  change
 10. change percent
