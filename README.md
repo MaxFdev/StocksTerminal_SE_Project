@@ -69,6 +69,8 @@ To simplify and organize the information-getting process for stock data.
 
         (e) "refresh" - gets the last stocks (up to 10) and requests all information offered on them.
 
+        (f) "remove [stock_symbol(s)]" - removes the listed stock(s) from the data storage units. No listed stock will just delete the most recent stock symbol added.
+
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
 
 ---
