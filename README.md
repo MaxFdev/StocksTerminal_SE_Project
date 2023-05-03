@@ -65,6 +65,10 @@ To simplify and organize the information-getting process for stock data.
             since day's open represented as a
             percentage.
 
+        (d) "clear" - clears the stock-history for refreshing data
+
+        (e) "refresh" - gets the last stocks (up to 10) and requests all information offered on them.
+
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
 
 ---
@@ -72,10 +76,6 @@ The ideal experience using this product is straightforward: use the "help" or re
 > Ideas/Functionality:
 
 -   Query; Commands to get data (specify wanted data)
-
-       Wanted data (and usage) includes:
-       
-        1. symbol - the given
 
 -   Live; Live command (updates info every certain amount of time)
 -   `List`; List (lists multiple stocks that are specified)
