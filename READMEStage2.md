@@ -26,7 +26,7 @@ We will also have a general "brain" that is used for the call and response of co
 
  - "Data" - Holds the references to the objects and calls within it. Added mostly to clean up and simplify the work of the "Logic" class, but will also serve an important function in hosting and updating the data calls.
 
- **Data Structures**
+ **Variables and Data Structures**
 
  *For "Stock"*
  - String: the symbol of the stock.
@@ -42,4 +42,5 @@ We will also have a general "brain" that is used for the call and response of co
  - String: the output will be formatted and concatenated into one string which will then be printed at CMD.
 
 *For "Data"*
-  - MinHeap: storage for cached stocks, which will cap at 10, and then remove the least-recently used stock and remove it from the cache.
+ - MinHeap: storage for cached stocks, which will cap at 10, and then remove the least-recently used stock and remove it from the cache.
+ - ArrayList: Used to take minHeap and order it alphabetically before returning cached items' requests. 
