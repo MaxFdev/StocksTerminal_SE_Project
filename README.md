@@ -6,7 +6,7 @@
 
 **Software Engineering Project:** CLI Stock Data Manager
 
-**Collaborators:** Max Franklin `&& Noam Ben Simon
+**Collaborators:** Max Franklin `&&` Noam Ben Simon
 
 ---
 
@@ -38,9 +38,12 @@ To simplify and organize the information-getting process for stock data.
 
 3.  use one of the following commands to call and retrieve data:
 
-        (a) "help" - prints a list of available commands, requests, and options, as well as a short description of each, akin to this list.
+        (a) "help" - prints a list of available commands, requests, and options,
+        as well as a short description of each, akin to this list.
 
-        (b) "[stock_symbol(s)] [live /or/ current] [requests(s)]" - executes the given command(s) on the stock symbol provided - separate symbols and requests with commas. Example provided:
+        (b) "[stock_symbol(s)] [live /or/ current] [requests(s)]" 
+        - executes the given command(s) on the stock symbol provided
+        - separate symbols and requests with commas. Example provided:
             "aapl, amzn -pov" - fetches the price, open
             price, and volume for aapl and amzn (empty
             request status assumes current)
@@ -64,17 +67,15 @@ To simplify and organize the information-getting process for stock data.
 
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
 
-Identify what need the software is meeting
-
 ---
 
 > Ideas/Functionality:
 
 -   Query; Commands to get data (specify wanted data)
 
-    Wanted data (and usage) includes:
-
-          1.symbol - the given
+       Wanted data (and usage) includes:
+       
+        1. symbol - the given
 
 -   Live; Live command (updates info every certain amount of time)
 -   `List`; List (lists multiple stocks that are specified)
