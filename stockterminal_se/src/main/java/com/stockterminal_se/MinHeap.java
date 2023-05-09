@@ -110,4 +110,8 @@ public class MinHeap<Type extends Comparable<Type>> {
         this.elements[this.count + 1] = null; //null it to prepare for GC
         return min;
     }
+
+    protected Type[] getElements() {
+        return this.elements;
+    }
 }

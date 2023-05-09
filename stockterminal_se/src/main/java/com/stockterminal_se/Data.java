@@ -10,6 +10,29 @@ public class Data {
         this.stockHeap = new MinHeap<Stock>();
     }
 
-    public ArrayList getSaved() {
+    public ArrayList<Stock> getSaved() {
+        ArrayList<Stock> returnList = new ArrayList<Stock>();
+        for (Stock stock : this.stockHeap.getElements()) {
+            returnList.add(stock);
+        }
+        Collections.sort(returnList, new StockComp());
+        return returnList;
+    }
+
+    class StockComp implements Comparator<Stock> {
+
+        private StockComp() {
+        }
+
+        @Override
+        public int compare(Stock one, Stock two) {
+            if (one.getLastUseTime() > two.getLastUseTime()) {
+                return 1;
+            }
+            else if (one.getLastUseTime() == two.getLastUseTime()) {
+                return 1;
+            }
+            return -1;
+        }
     }
 }
