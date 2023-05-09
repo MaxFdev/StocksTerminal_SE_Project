@@ -4,10 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import com.stockterminal_se.Stock;
 
-/**
- * Beginnings of a MinHeap, for Stage 4 of project. Does not include the additional data structure or logic needed to reheapify an element after its last use time changes.
- * @param <E>
- */
 public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
     protected Stock[] elements;
     protected int count = 0;
