@@ -12,7 +12,6 @@ public class Logic {
     private String output;
 
     private enum Mode {
-        Help,
         Query,
         Clear,
         Refresh,
