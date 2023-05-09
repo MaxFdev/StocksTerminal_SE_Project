@@ -114,4 +114,5 @@ public class MinHeap<Type extends Comparable<Type>> {
     protected Type[] getElements() {
         return this.elements;
     }
+    
 }

@@ -44,7 +44,6 @@ public class Logic {
      * 
      */
     public Logic(String[] args) {
-        animateToStockInfo();
         this.dataManager = new Data();
         this.end = false;
         start(args);
@@ -108,55 +107,8 @@ public class Logic {
             frame++;
             waitTime(100);
         }
-    }
 
-    /**
-     * Animates startup if stock info has already been entered.
-     */
-    private void animateToStockInfo() {
         clearTerminal();
-
-        String[] animationFrames = { "|", "/", "-", "\\" };
-        int frame = 0;
-        int frameIndex = 0;
-        while (frame < 10) {
-            System.out.print("\033[1;1H");
-            System.out.print(animationFrames[frameIndex]);
-            frameIndex = (frameIndex + 1) % animationFrames.length;
-            frame++;
-            waitTime(100);
-        }
-    }
-
-    /**
-     * This method is called on startup to get the first args if they are not provided.
-     * 
-     * @return String[] of args
-     * 
-     */
-    private String[] getArgs() {
-        clearTerminal();
-
-        System.out.println("Please enter commands bellow.");
-
-        this.argScanner = new Scanner(System.in);
-        String in = this.argScanner.nextLine();
-        String[] sp;
-        if (in != null) {
-            sp = in.split(" ");
-        } else {
-            sp = new String[0];
-        }
-        
-        clearTerminal();
-
-        if (sp.length == 0) {
-            System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
-            waitTime(500);
-            return getArgs();
-        }
-
-        return sp;
     }
 
     /**
@@ -166,8 +118,6 @@ public class Logic {
      * 
      */
     private void start(String[] args) {
-        clearTerminal();
-
         this.args = args;
 
         if (this.args.length == 0) {
@@ -177,8 +127,6 @@ public class Logic {
         }
         
         runMode();
-        
-        // finish
     }
 
     /**
@@ -219,10 +167,10 @@ public class Logic {
                     this.mode = Mode.History;
                 }
                 default -> {
-                    this.mode = Mode.Error;
+                    filter(args);
                 }
             }
-        } else {
+        } else if (args.length == 2) {
             switch (args[0]) {
                 case "remove" -> {
                     this.mode = Mode.Remove;
@@ -231,9 +179,11 @@ public class Logic {
                     this.mode = Mode.Live;
                 }
                 default -> {
-                    this.mode = Mode.Query;
+                    filter(args);
                 }
             }
+        } else {
+            filter(args);
         }
     }
 
@@ -252,22 +202,23 @@ public class Logic {
                 help();
             }
             case Clear -> {
-
+                clear();
             }
             case Refresh -> {
-
+                refresh();
             }
             case History -> {
-
+                history();
             }
             case Remove -> {
-
+                remove(this.args[1]);
             }
             case Live -> {
-
+                live(this.args[1]);
             }
             case Query -> {
-
+                filter(this.args);
+                query();
             }
         }
         clearValues();
@@ -283,14 +234,17 @@ public class Logic {
     }
 
     private void inputError() {
+        clearTerminal();
         this.output = "Input was invalid! Please try again when prompted. (enter \"help\" for help or \"quit\" to exit)";
         animateOutput();
+        waitTime(1000);
     }
 
-    private void help() { // finish
+    private void help() {
+        clearTerminal();
         this.output = 
         "(a) \"help\" - prints a list of available commands, requests, and options,\n as well as a short description of each, akin to this list." + "\n\n" +
-        "(b) \"[stock_symbol(s)] [request(s) flag(s)]\"" + "\n" +
+        "(b) \"[stock_symbol(s, up to 10)] [request(s) flag(s)]\"" + "\n" +
         "    - executes the given command on the stock symbol(s) provided" + "\n" +
         "    - separate symbols and requests with a space. Example provided:" + "\n" +
         "    \"aapl amzn -pov\" - fetches the price, open" + "\n" +
@@ -315,40 +269,81 @@ public class Logic {
         "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
         "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
         animateOutput();
+        waitTime(10000);
     }
 
-    private void clear() { // finish
+    private void clear() {
+        clearTerminal();
         this.dataManager.clear();
-        this.output = "";
+        this.output = "Data has been cleared.";
+        animateOutput();
+        waitTime(1000);
     }
 
-    private void refresh() { // finish
-        this.dataManager.refresh();
-        this.output = "";
+    private void refresh() {
+        clearTerminal();
+        List<Stock> stocks = this.dataManager.refresh();
+        this.output = "Data has been updated, here is all the new data:";
+        animateOutput();
+        for (Stock stock : stocks) {
+            waitTime(50);
+            System.out.println(stock);
+        }
+        waitTime(1000);
     }
 
-    private void history() { // finish
-        this.dataManager.history();
-        this.output = "";
+    private void history() {
+        clearTerminal();
+        List<Stock> stocks = this.dataManager.history();
+        this.output = "Here are all the stocks ever requested:";
+        animateOutput();
+        for (Stock stock : stocks) {
+            waitTime(10);
+            System.out.print("\n" + stock.symbol());
+        }
+        waitTime(1000);
     }
 
-    private void remove(String ticker) { // finish
-        this.dataManager.remove(ticker);
-        this.output = "";
+    private void remove(String ticker) {
+        clearTerminal();
+        if (this.dataManager.remove(ticker)) {
+            this.output = ticker + " was removed from data.";
+        } else {
+            this.output = ticker + "was not in data.";
+        }
+        animateOutput();
+        waitTime(1000);
     }
 
-    private void live(String ticker) { // finish
-        this.dataManager.live(ticker);
-        this.output = "";
+    private void live(String ticker) {
+        boolean stayLive = true;
+        int refreshes = 0;
+        while (stayLive) {
+            refreshes++;
+            clearTerminal();
+            System.out.print(this.dataManager.live(ticker));
+            stayLive = refreshes == 60 ? false : true;
+            waitTime(1005);
+        }
     }
 
-    private void query(String[] tickers) { // finish
-        this.dataManager.query(tickers);
+    private void query() {
+        if (this.flags == null) {
+            if (this.args.length == 1) {
+                query(this.args[0]);
+            } else {
+                query(this.args);
+            }
+        }
+    }
+
+    private void query(String[] tickers) { // finish (deal with nulls)
+        Stock[] stocks = this.dataManager.query(tickers);
         this.output = "";
     }
     
     private void query(String ticker) { // finish
-        this.dataManager.query(ticker);
+        Stock stock = this.dataManager.query(ticker);
         this.output = "";
     }
 
@@ -360,10 +355,9 @@ public class Logic {
      * Takes in unchecked args and makes sure they are all valid.
      * 
      * @param args
-     * @return filtered args
      *
      */
-    private String[] filter(String[] args) { // fix
+    private void filter(String[] args) {
         ArrayList<String> tickersAndFlags = new ArrayList<String>();
         boolean badInput = args.length > 11 || args.length < 1 ? true : false;
         for (int index = 0; index < args.length && !badInput; index++) {
@@ -372,40 +366,68 @@ public class Logic {
                     if (args[index].length() > 0 && args[index].length() < 5) {
                         tickersAndFlags.add(args[index]);
                         if (index == args.length - 1 && tickersAndFlags.size() > 0)
-                            return tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
-                    } else
+                            this.args = tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
+                            this.mode = Mode.Query;
+                            return;
+                    } else{
                         badInput = true;
+                    }
                 } else if (args[index].startsWith("-") && index == args.length - 1) {
-                    tickersAndFlags.add(args[index]);
-                    return tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
-                } else
+                    getFlags(args[index]);
+                    this.args = tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
+                    this.mode = Mode.Query;
+                    return;
+                } else {
                     badInput = true;
+                }
             }
         }
-        clearTerminal();
-        System.out.println(
-                "Input or part of input was invalid. Please try again. (If you need help, enter \"help\")");
-        return null;
+        this.mode = Mode.Error;
     }
     
     /**
-     * Checks for flags. If there are none return null.
+     * Checks for flags.
      * 
      * @param args
-     * @return checked flags
      * 
      */
-    private char[] getFlags(String[] args) { // fix
-        if (args[args.length - 1].startsWith("-") && args[args.length - 1].substring(1).matches("[cehloprtv]")) {
-            return args[args.length - 1].substring(1).toCharArray();
-        } else if (args[args.length - 1].startsWith("-")) {
-            clearTerminal();
-            System.out.println(
-                    "Input or part of input was invalid. Please try again. (If you need help, enter \"help\")");
-            return null;
+    private void getFlags(String arg) { // fix
+        if (arg.startsWith("-") && arg.substring(1).matches("[cehloprtv]")) {
+            this.flags = arg.substring(1).toCharArray();
         } else {
-            return new char[0];
+            this.mode = Mode.Error;
         }
+    }
+    
+    /**
+     * This method is called on startup to get the first args if they are not provided.
+     * 
+     * @return String[] of args
+     * 
+     */
+    private String[] getArgs() {
+        clearTerminal();
+
+        System.out.println("Please enter commands bellow.");
+
+        this.argScanner = new Scanner(System.in);
+        String in = this.argScanner.nextLine();
+        String[] sp;
+        if (in != null) {
+            sp = in.split(" ");
+        } else {
+            sp = new String[0];
+        }
+        
+        clearTerminal();
+
+        if (sp.length == 0) {
+            System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
+            waitTime(500);
+            return getArgs();
+        }
+
+        return sp;
     }
 
     private void animateOutput() {
@@ -415,7 +437,7 @@ public class Logic {
         }
     }
 
-    private void clearValues() { // finish and test
+    private void clearValues() {
         this.args = null;
         this.flags = null;
         this.mode = null;

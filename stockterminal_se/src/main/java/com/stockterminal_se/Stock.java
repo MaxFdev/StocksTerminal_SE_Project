@@ -23,8 +23,20 @@ public class Stock implements Comparable<Stock> {
     //time value
     private long lastUseTime;
     
-    public Stock (String ticker) {
+    public Stock (String ticker, String apiKey) {
         this.ticker = ticker;
+        try {
+            refresh(apiKey);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
+        setUseTime();
+    }
+
+    @Override
+    public String toString() {
+        return this.allData;
     }
 
     protected void refresh(String apiKey) throws IOException {
@@ -36,6 +48,10 @@ public class Stock implements Comparable<Stock> {
     // time-use methods and the compareTo associated with it
     public void setUseTime() {
         this.lastUseTime = System.currentTimeMillis();
+    }
+
+    public void setUseTime(int value) {
+        this.lastUseTime = value;
     }
 
     public long getLastUseTime() {
