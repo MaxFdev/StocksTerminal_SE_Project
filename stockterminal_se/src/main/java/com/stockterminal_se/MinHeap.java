@@ -2,7 +2,8 @@ package com.stockterminal_se;
 
 import java.util.*;
 
-public class MinHeap<Type extends Comparable<Type>> implements Iterable {
+public class MinHeap<Type extends Comparable<Type>> {
+    
     protected Type[] elements;
     protected int count = 0;
 
@@ -26,7 +27,7 @@ public class MinHeap<Type extends Comparable<Type>> implements Iterable {
         throw new NoSuchElementException();
     }
 
-    protected void doubleArraySize() {
+    private void doubleArraySize() {
         Type[] tempArray = (Type[]) new Comparable[this.elements.length * 2];
         for (int i = 0; i < this.elements.length; i++) {
             tempArray[i] = this.elements[i];
@@ -41,14 +42,14 @@ public class MinHeap<Type extends Comparable<Type>> implements Iterable {
     /**
      * is elements[i] > elements[j]?
      */
-    protected boolean isGreater(int i, int j) {
+    private boolean isGreater(int i, int j) {
         return ((Type) this.elements[i]).compareTo((Type) this.elements[j]) > 0;
     }
 
     /**
      * swap the values stored at elements[i] and elements[j]
      */
-    protected void swap(int i, int j) {
+    private void swap(int i, int j) {
         Type temp = this.elements[i];
         this.elements[i] = this.elements[j];
         this.elements[j] = temp;
@@ -58,7 +59,7 @@ public class MinHeap<Type extends Comparable<Type>> implements Iterable {
      * while the key at index k is less than its
      * parent's key, swap its contents with its parent’s
      */
-    protected void upHeap(int k) {
+    private void upHeap(int k) {
         while (k > 1 && this.isGreater(k / 2, k)) {
             this.swap(k, k / 2);
             k = k / 2;
@@ -69,7 +70,7 @@ public class MinHeap<Type extends Comparable<Type>> implements Iterable {
      * move an element down the heap until it is less than
      * both its children or is at the bottom of the heap
      */
-    protected void downHeap(int k) {
+    private void downHeap(int k) {
         while (2 * k <= this.count) {
             //identify which of the 2 children are smaller
             int j = 2 * k;
@@ -108,23 +109,5 @@ public class MinHeap<Type extends Comparable<Type>> implements Iterable {
         this.downHeap(1);
         this.elements[this.count + 1] = null; //null it to prepare for GC
         return min;
-    }
-
-    @Override
-    public Iterator<Type> iterator() {
-        Iterator<Type> it = new Iterator<Type>() {
-            private int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return currentIndex < count && elements[currentIndex] != null;
-            }
-
-            @Override
-            public Type next() {
-                return elements[currentIndex++];
-            }
-        };
-        return it;
     }
 }
