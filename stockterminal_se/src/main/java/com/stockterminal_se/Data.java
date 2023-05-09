@@ -17,25 +17,8 @@ public class Data {
         for (Stock stock : this.stockHeap.getElements()) {
             returnList.add(stock);
         }
-        Collections.sort(returnList, new StockComp());
+        Collections.sort(returnList, new StockUseComp());
         return returnList;
-    }
-
-    class StockComp implements Comparator<Stock> {
-
-        private StockComp() {
-        }
-
-        @Override
-        public int compare(Stock one, Stock two) {
-            if (one.getLastUseTime() > two.getLastUseTime()) {
-                return 1;
-            }
-            else if (one.getLastUseTime() == two.getLastUseTime()) {
-                return 1;
-            }
-            return -1;
-        }
     }
     
     public Stock query(String ticker) {
@@ -59,11 +42,42 @@ public class Data {
     }
     
     public List<Stock> history() {
+        List<Stock> sortedList = Collections.sort(stockList, new StockNameComp());
         return Collections.unmodifiableList(this.stockList);
     }
     
     public Stock live(String ticker) {
         
+    }
+
+    // comparators
+
+    class StockUseComp implements Comparator<Stock> {
+
+        private StockUseComp() {
+        }
+
+        @Override
+        public int compare(Stock one, Stock two) {
+            if (one.getLastUseTime() > two.getLastUseTime()) {
+                return 1;
+            }
+            else if (one.getLastUseTime() == two.getLastUseTime()) {
+                return 0;
+            }
+            return -1;
+        }
+    }
+
+    class StockNameComp implements Comparator<Stock> {
+
+        private StockNameComp() {
+        }
+
+        @Override
+        public int compare(Stock one, Stock two) {
+            return one.symbol().compareTo(two.symbol());
+        }
     }
 
 }
