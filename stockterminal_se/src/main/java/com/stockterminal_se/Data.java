@@ -5,11 +5,38 @@ import java.util.*;
 public class Data {
 
     MinHeap<Stock> stockHeap;
+    ArrayList<Stock> stockList;
 
     public Data() {
         this.stockHeap = new MinHeap<Stock>();
+        this.stockList = new ArrayList<Stock>();
     }
 
-    public ArrayList getSaved() {
+    public Stock query(String ticker) {
+
+    }
+    
+    public ArrayList<Stock> query(String[] tickers) {
+
+    }
+    
+    public void clear() {
+
+    }
+    
+    public void refresh() {
+
+    }
+    
+    public boolean remove(Stock stock) {
+
+    }
+    
+    public ArrayList<Stock> history() {
+
+    }
+    
+    public Stock live(Stock stock) {
+        
     }
 }
