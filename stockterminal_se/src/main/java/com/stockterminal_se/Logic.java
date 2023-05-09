@@ -171,14 +171,13 @@ public class Logic {
         this.args = args;
 
         if (this.args.length == 0) {
-            System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
-            waitTime(500);
+            this.mode = Mode.Error;
         } else {
             checkMode(this.args);
-
-            runMode();
         }
-
+        
+        runMode();
+        
         // finish
     }
 
@@ -242,31 +241,80 @@ public class Logic {
      * Checks the mode to run the correct operation.
      */
     private void runMode() {
-        
+        switch (this.mode) {
+            case Quit -> {
+                quit();
+            }
+            case Error -> {
+                inputError();
+            }
+            case Help -> {
+                help();
+            }
+            case Clear -> {
+
+            }
+            case Refresh -> {
+
+            }
+            case History -> {
+
+            }
+            case Remove -> {
+
+            }
+            case Live -> {
+
+            }
+            case Query -> {
+
+            }
+        }
+        clearValues();
+        clearTerminal();
     }
     
     /*
      * <-----| These methods manage the output and make calls to preform operations |----->
     */
 
-    private void clearValues() { // finish and test
-        this.args = null;
-        this.flags = null;
-        this.mode = null;
-        this.output = null;
-        this.mode = null;
+    private void quit() {
+        this.end = true;
     }
 
-    private void quit() { // finish
-        
-    }
-
-    private void inputError() { // finish
-        this.output = "";        
+    private void inputError() {
+        this.output = "Input was invalid! Please try again when prompted. (enter \"help\" for help or \"quit\" to exit)";
+        animateOutput();
     }
 
     private void help() { // finish
-        this.output = "";
+        this.output = 
+        "(a) \"help\" - prints a list of available commands, requests, and options,\n as well as a short description of each, akin to this list." + "\n\n" +
+        "(b) \"[stock_symbol(s)] [request(s) flag(s)]\"" + "\n" +
+        "    - executes the given command on the stock symbol(s) provided" + "\n" +
+        "    - separate symbols and requests with a space. Example provided:" + "\n" +
+        "    \"aapl amzn -pov\" - fetches the price, open" + "\n" +
+        "    price, and volume for aapl and amzn (empty" + "\n" +
+        "    request status assumes current)" + "\n" +
+        "    ---" + "\n" +
+        "    request flags and their uses:" + "\n" +
+        "        No specification / \"\" - assumes all other requests (same as \"-cehloprtv\")" + "\n" +
+        "        (All the following go after a \"-\")" + "\n" +
+        "        1. open / \"o\" - day's open price" + "\n" +
+        "        2. high / \"h\" - day's high price" + "\n" +
+        "        3. low / \"l\" - day's low price" + "\n" +
+        "        4. price / \"e\" - current price" + "\n" +
+        "        4. volume / \"v\" - stock volume" + "\n" +
+        "        5. latest trading day / \"t\" - last day that trading     was available" + "\n" +
+        "        6. previous close / \"p\" - the previous trading  day's closing price" + "\n" +
+        "        7. change / \"c\" - change in price since day's open" + "\n" +
+        "        8. change in percent / \"r\" - change in price since day's open represented as a percentage." + "\n" +
+        "(c) \"clear\" - clears the stock-history for refreshing data" + "\n\n" +
+        "(d) \"refresh\" - gets the last stocks (up to 10) and requests all information offered on them." + "\n\n" +
+        "(e) \"remove [stock_symbol(s)]\" - removes the listed stock(s) from the data storage units.\n No listed stock will just delete the most recent stock symbol added." + "\n\n" +
+        "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
+                        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
+        animateOutput();
     }
 
     private void clear() { // finish
@@ -360,6 +408,21 @@ public class Logic {
         }
     }
 
+    private void animateOutput() {
+        for (char c : this.output.toCharArray()) {
+            System.out.print(c);
+            waitTime(100);
+        }
+    }
+
+    private void clearValues() { // finish and test
+        this.args = null;
+        this.flags = null;
+        this.mode = null;
+        this.output = null;
+        this.mode = null;
+    }
+    
     private void clearTerminal() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
