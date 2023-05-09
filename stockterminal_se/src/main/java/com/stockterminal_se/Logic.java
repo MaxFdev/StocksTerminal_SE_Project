@@ -10,6 +10,7 @@ public class Logic {
     private char[] flags;
     private Mode mode;
     private String output;
+    private boolean end;
 
     private enum Mode {
         Error,
@@ -19,7 +20,8 @@ public class Logic {
         Refresh,
         Remove,
         History,
-        Live
+        Live,
+        Quit
     }
 
     /**
@@ -28,7 +30,11 @@ public class Logic {
     public Logic() {
         animateStartUp();
         this.dataManager = new Data();
+        this.end = false;
         start(getArgs());
+        while (!end) {
+            continueProgram();
+        }
     }
 
     /**
@@ -40,7 +46,11 @@ public class Logic {
     public Logic(String[] args) {
         animateToStockInfo();
         this.dataManager = new Data();
+        this.end = false;
         start(args);
+        while (!end) {
+            continueProgram();
+        }
     }
     
     /**
@@ -63,6 +73,14 @@ public class Logic {
      */
     private void animateStartUp() {
         clearTerminal();
+
+        String logo = 
+        " ___  _             _    _____                   _              _ " +"\n"+
+        "/ __|| |_  ___  __ | |__|_   _| ___  _ _  _ __  (_) _ _   __ _ | |"+"\n"+
+        "\\__ \\|  _|/ _ \\/ _|| / /  | |  / -_)| '_|| '  \\ | || ' \\ / _` || |"+"\n"+
+        "|___/ \\__|\\___/\\__||_\\_\\  |_|  \\___||_|  |_|_|_||_||_||_|\\__/_||_|";
+        
+        System.out.println("\u001B[32m" + logo + "\n");
 
         String start = "Welcome to StockTerminal-SE!\nEnter commands when prompted (or \"help\" for help).";
         for (char c : start.toCharArray()) {
@@ -90,8 +108,6 @@ public class Logic {
             frame++;
             waitTime(100);
         }
-
-        clearTerminal();
     }
 
     /**
@@ -110,8 +126,6 @@ public class Logic {
             frame++;
             waitTime(100);
         }
-
-        clearTerminal();
     }
 
     /**
@@ -121,6 +135,8 @@ public class Logic {
      * 
      */
     private String[] getArgs() {
+        clearTerminal();
+
         System.out.println("Please enter commands bellow.");
 
         this.argScanner = new Scanner(System.in);
@@ -137,7 +153,6 @@ public class Logic {
         if (sp.length == 0) {
             System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
             waitTime(500);
-            clearTerminal();
             return getArgs();
         }
 
@@ -151,18 +166,14 @@ public class Logic {
      * 
      */
     private void start(String[] args) {
+        clearTerminal();
+
         if (args.length == 0) {
-            clearTerminal();
             System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
             waitTime(500);
-            clearTerminal();
-            args = getArgs();
+        } else {
+            
         }
-        this.args = filter(args);
-        if (this.args == null) {
-            continueProgram();
-        }
-        this.flags = getFlags(this.args);
 
         // finish
     }
@@ -171,19 +182,14 @@ public class Logic {
      * This method continues running the program while nothing is going on.
      */
     private void continueProgram() {
-        
-        this.args = filter(getArgs());
-        if (this.args == null) {
-            continueProgram();
-        }
-        this.flags = getFlags(this.args);
-        if (this.flags == null) {
-            continueProgram();
-        }
-        // finish
-    }
+        this.args = getArgs();
 
-    
+        clearTerminal();
+
+        checkMode(this.args);
+
+        runMode();
+    }
 
     /**
      * This method checks args to determine the proper processing mode.
@@ -194,6 +200,9 @@ public class Logic {
     private void checkMode(String[] args) {
         if (args.length == 1) {
             switch (args[0]) {
+                case "quit" -> {
+                    this.mode = Mode.Quit;
+                }
                 case "help" -> {
                     this.mode = Mode.Help;
                 }
@@ -224,6 +233,13 @@ public class Logic {
             }
         }
     }
+
+    /**
+     * Checks the mode to run the correct operation.
+     */
+    private void runMode() {
+        
+    }
     
     /*
      * <-----| These methods manage the output and make calls to preform operations |----->
@@ -235,6 +251,10 @@ public class Logic {
         this.mode = null;
         this.output = null;
         this.mode = null;
+    }
+
+    private void quit() { // finish
+        
     }
 
     private void inputError() { // finish

@@ -71,6 +71,8 @@ To simplify and organize the information-getting process for stock data.
 
         (g) "Live [stock_symbol]" (capital "L") - gives a live feed of a specific stock.
 
+        (h) "quit" - leaves the program.
+
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
 
 ---
@@ -84,6 +86,7 @@ The ideal experience using this product is straightforward: use the "help" or re
 -   Remove; Removes a stock from the cache
 -   History; lists all stocks ever requested
 -   Live; Live command (updates info every certain amount of time)
+-   Quit; Exits the program
 
 > Stock data we can get:
 
