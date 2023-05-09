@@ -12,6 +12,8 @@ public class Logic {
     private String output;
 
     private enum Mode {
+        Error,
+        Help,
         Query,
         Clear,
         Refresh,
@@ -61,18 +63,22 @@ public class Logic {
      */
     private void animateStartUp() {
         clearTerminal();
-        String start = "Welcome to StockTerminal-SE!\nEnter stock tickers when prompted.";
+
+        String start = "Welcome to StockTerminal-SE!\nEnter commands when prompted (or \"help\" for help).";
         for (char c : start.toCharArray()) {
             if (start.indexOf(c) < start.indexOf("!") || c == '!') {
                 System.out.print("\033[31m" + c);
-                start = start.substring(start.indexOf(c)+1);
+                start = start.substring(start.indexOf(c) + 1);
             } else {
                 System.out.print("\033[0m" + c);
             }
             waitTime(10);
         }
+        
         waitTime(1000);
+
         clearTerminal();
+
         String[] animationFrames = { "|", "/", "-", "\\" };
         int frame = 0;
         int frameIndex = 0;
@@ -84,6 +90,7 @@ public class Logic {
             frame++;
             waitTime(100);
         }
+
         clearTerminal();
     }
 
@@ -92,6 +99,7 @@ public class Logic {
      */
     private void animateToStockInfo() {
         clearTerminal();
+
         String[] animationFrames = { "|", "/", "-", "\\" };
         int frame = 0;
         int frameIndex = 0;
@@ -102,19 +110,8 @@ public class Logic {
             frame++;
             waitTime(100);
         }
+
         clearTerminal();
-    }
-
-    private void clearTerminal() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    private void waitTime(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-        }
     }
 
     /**
@@ -124,21 +121,26 @@ public class Logic {
      * 
      */
     private String[] getArgs() {
-        System.out.println("Please enter stock tickers (and flags).");
+        System.out.println("Please enter commands bellow.");
+
         this.argScanner = new Scanner(System.in);
         String in = this.argScanner.nextLine();
         String[] sp;
         if (in != null) {
             sp = in.split(" ");
-        } else
+        } else {
             sp = new String[0];
+        }
+        
+        clearTerminal();
+
         if (sp.length == 0) {
-            clearTerminal();
             System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
             waitTime(500);
             clearTerminal();
             return getArgs();
         }
+
         return sp;
     }
 
@@ -169,10 +171,7 @@ public class Logic {
      * This method continues running the program while nothing is going on.
      */
     private void continueProgram() {
-        this.args = null;
-        this.flags = null;
-        this.mode = null;
-        this.output = null;
+        
         this.args = filter(getArgs());
         if (this.args == null) {
             continueProgram();
@@ -184,6 +183,97 @@ public class Logic {
         // finish
     }
 
+    
+
+    /**
+     * This method checks args to determine the proper processing mode.
+     * 
+     * @param args
+     * 
+     */
+    private void checkMode(String[] args) {
+        if (args.length == 1) {
+            switch (args[0]) {
+                case "help" -> {
+                    this.mode = Mode.Help;
+                }
+                case "clear" -> {
+                    this.mode = Mode.Clear;
+                }
+                case "refresh" -> {
+                    this.mode = Mode.Refresh;
+                }
+                case "history" -> {
+                    this.mode = Mode.History;
+                }
+                default -> {
+                    this.mode = Mode.Error;
+                }
+            }
+        } else {
+            switch (args[0]) {
+                case "remove" -> {
+                    this.mode = Mode.Remove;
+                }
+                case "Live" -> {
+                    this.mode = Mode.Live;
+                }
+                default -> {
+                    this.mode = Mode.Query;
+                }
+            }
+        }
+    }
+    
+    /*
+     * <-----| These methods manage the output and make calls to preform operations |----->
+    */
+
+    private void clearValues() { // finish and test
+        this.args = null;
+        this.flags = null;
+        this.mode = null;
+        this.output = null;
+        this.mode = null;
+    }
+
+    private void inputError() { // finish
+        this.output = "";        
+    }
+
+    private void help() { // finish
+        this.output = "";
+    }
+
+    private void clear() { // finish
+        this.dataManager.clear();
+        this.output = "";
+    }
+
+    private void refresh() { // finish
+        this.dataManager.refresh();
+        this.output = "";
+    }
+
+    private void history() { // finish
+        this.dataManager.history();
+        this.output = "";
+    }
+
+    private void remove(String ticker) { // finish
+        this.dataManager.remove(ticker);
+        this.output = "";
+    }
+
+    private void live(String ticker) { // finish
+        this.dataManager.live(ticker);
+        this.output = "";
+    }
+
+    /*
+     * <----------------------------------------------------------------------------------->
+    */
+    
     /**
      * Takes in unchecked args and makes sure they are all valid.
      * 
@@ -193,7 +283,7 @@ public class Logic {
      */
     private String[] filter(String[] args) {
         ArrayList<String> tickersAndFlags = new ArrayList<String>();
-        boolean badInput = args.length > 11 ? true : false;
+        boolean badInput = args.length > 11 || args.length < 1 ? true : false;
         for (int index = 0; index < args.length && !badInput; index++) {
             if (args[index].matches("[a-z-]+")) {
                 if (args[index].matches("[a-z]+")) {
@@ -233,6 +323,18 @@ public class Logic {
             return null;
         } else {
             return new char[0];
+        }
+    }
+
+    private void clearTerminal() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    private void waitTime(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
         }
     }
 }

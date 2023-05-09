@@ -54,7 +54,7 @@ public class Data {
 
     }
     
-    public boolean remove(Stock stock) {
+    public boolean remove(String ticker) {
 
     }
     
@@ -62,7 +62,7 @@ public class Data {
 
     }
     
-    public Stock live(Stock stock) {
+    public Stock live(String ticker) {
         
     }
 
