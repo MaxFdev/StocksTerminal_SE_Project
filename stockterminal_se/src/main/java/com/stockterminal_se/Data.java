@@ -39,7 +39,7 @@ public class Data {
     }
     
     public Stock query(String ticker) {
-
+        
     }
     
     public ArrayList<Stock> query(String[] tickers) {
@@ -58,8 +58,8 @@ public class Data {
 
     }
     
-    public ArrayList<Stock> history() {
-
+    public List<Stock> history() {
+        return Collections.unmodifiableList(this.stockList);
     }
     
     public Stock live(String ticker) {
