@@ -44,7 +44,7 @@ public class Data {
      * @return
      */
     public Stock query(String ticker) {
-
+        
     }
     
     /**
@@ -87,7 +87,7 @@ public class Data {
      * @return
      */
     public List<Stock> history() {
-
+        return Collections.unmodifiableList(this.stockList);
     }
     
     /**
