@@ -73,6 +73,8 @@ public class Logic {
     private void animateStartUp() {
         clearTerminal();
 
+        waitTime(500);
+
         String logo = 
         " ___  _             _    _____                   _              _ " +"\n"+
         "/ __|| |_  ___  __ | |__|_   _| ___  _ _  _ __  (_) _ _   __ _ | |"+"\n"+
@@ -80,6 +82,8 @@ public class Logic {
         "|___/ \\__|\\___/\\__||_\\_\\  |_|  \\___||_|  |_|_|_||_||_||_|\\__/_||_|";
         
         System.out.println("\u001B[32m" + logo + "\n");
+
+        waitTime(500);
 
         String start = "Welcome to StockTerminal-SE!\nEnter commands when prompted (or \"help\" for help).";
         for (char c : start.toCharArray()) {
@@ -92,21 +96,11 @@ public class Logic {
             waitTime(10);
         }
         
-        waitTime(1000);
+        waitTime(5000);
 
         clearTerminal();
 
-        String[] animationFrames = { "|", "/", "-", "\\" };
-        int frame = 0;
-        int frameIndex = 0;
-        System.out.print("\033[1;1H");
-        while (frame < 15) {
-            System.out.print("\033[1;1H");
-            System.out.print(animationFrames[frameIndex]);
-            frameIndex = (frameIndex + 1) % animationFrames.length;
-            frame++;
-            waitTime(100);
-        }
+        loadingWheel();
 
         clearTerminal();
     }
@@ -173,10 +167,18 @@ public class Logic {
         } else if (args.length == 2) {
             switch (args[0]) {
                 case "remove" -> {
-                    this.mode = Mode.Remove;
+                    if (check(args[1])) {
+                        this.mode = Mode.Remove;
+                    } else {
+                        this.mode = Mode.Error;
+                    }
                 }
                 case "Live" -> {
-                    this.mode = Mode.Live;
+                    if (check(args[1])) {
+                        this.mode = Mode.Live;
+                    } else {
+                        this.mode = Mode.Error;
+                    }
                 }
                 default -> {
                     filter(args);
@@ -223,6 +225,8 @@ public class Logic {
         }
         clearValues();
         clearTerminal();
+        loadingWheel();
+        clearTerminal();
     }
     
     /*
@@ -242,7 +246,7 @@ public class Logic {
 
     private void help() {
         clearTerminal();
-        this.output = 
+        String help = 
         "(a) \"help\" - prints a list of available commands, requests, and options,\n as well as a short description of each, akin to this list." + "\n\n" +
         "(b) \"[stock_symbol(s, up to 10)] [request(s) flag(s)]\"" + "\n" +
         "    - executes the given command on the stock symbol(s) provided" + "\n" +
@@ -267,8 +271,8 @@ public class Logic {
         "(d) \"refresh\" - gets the last stocks (up to 10) and requests all information offered on them." + "\n\n" +
         "(e) \"remove [stock_symbol]\" - removes the given stock from the data storage units." + "\n\n" +
         "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
-        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
-        animateOutput();
+                        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
+        quickType(help);
         waitTime(10000);
     }
 
@@ -287,9 +291,9 @@ public class Logic {
         animateOutput();
         for (Stock stock : stocks) {
             waitTime(50);
-            System.out.println(stock);
+            quickType("\n" + stock.toString());
         }
-        waitTime(1000);
+        waitTime(10000);
     }
 
     private void history() {
@@ -299,7 +303,7 @@ public class Logic {
         animateOutput();
         for (Stock stock : stocks) {
             waitTime(10);
-            System.out.print("\n" + stock.symbol());
+            quickType("\n" + stock.symbol());
         }
         waitTime(1000);
     }
@@ -321,7 +325,7 @@ public class Logic {
         while (stayLive) {
             refreshes++;
             clearTerminal();
-            System.out.print(this.dataManager.live(ticker));
+            System.out.print(this.dataManager.live(ticker).toString());
             stayLive = refreshes == 60 ? false : true;
             waitTime(1005);
         }
@@ -334,17 +338,36 @@ public class Logic {
             } else {
                 query(this.args);
             }
+        } else {
+
         }
     }
 
-    private void query(String[] tickers) { // finish (deal with nulls)
-        Stock[] stocks = this.dataManager.query(tickers);
-        this.output = "";
+    private void query(String[] tickers) {
+        List<Stock> stocks = this.dataManager.query(tickers);
+        if (stocks == null) {
+            clearTerminal();
+            this.output = "There were some unexpected problems. Please try again.";
+            animateOutput();
+        } else {
+            for (Stock stock : stocks) {
+                waitTime(50);
+                quickType(stock.toString());
+            }
+            waitTime(1000);
+        }
     }
     
-    private void query(String ticker) { // finish
+    private void query(String ticker) {
         Stock stock = this.dataManager.query(ticker);
-        this.output = "";
+        if (stock == null) {
+            clearTerminal();
+            this.output = "There were some unexpected problems. Please try again.";
+            animateOutput();
+        } else {
+            quickType(stock.toString());
+            waitTime(1000);
+        }
     }
 
     /*
@@ -365,10 +388,11 @@ public class Logic {
                 if (args[index].matches("[a-z]+")) {
                     if (args[index].length() > 0 && args[index].length() < 5) {
                         tickersAndFlags.add(args[index]);
-                        if (index == args.length - 1 && tickersAndFlags.size() > 0)
+                        if (index == args.length - 1 && tickersAndFlags.size() > 0) {
                             this.args = tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
                             this.mode = Mode.Query;
                             return;
+                        }
                     } else{
                         badInput = true;
                     }
@@ -391,12 +415,23 @@ public class Logic {
      * @param args
      * 
      */
-    private void getFlags(String arg) { // fix
-        if (arg.startsWith("-") && arg.substring(1).matches("[cehloprtv]")) {
+    private void getFlags(String arg) {
+        if (arg.startsWith("-") && arg.substring(1).matches("[cehloprtv]+")) {
             this.flags = arg.substring(1).toCharArray();
         } else {
             this.mode = Mode.Error;
         }
+    }
+
+    /**
+     * This method checks if a single arg is a valid ticker.
+     * 
+     * @param arg
+     * @return true if its valid
+     * 
+     */
+    private boolean check(String arg) {
+        return (arg.length() > 1 && arg.length() < 5 && arg.matches("[a-z]+")) ? true : false;
     }
     
     /**
@@ -408,7 +443,7 @@ public class Logic {
     private String[] getArgs() {
         clearTerminal();
 
-        System.out.println("Please enter commands bellow.");
+        quickType("Please enter commands bellow.\n");
 
         this.argScanner = new Scanner(System.in);
         String in = this.argScanner.nextLine();
@@ -422,8 +457,8 @@ public class Logic {
         clearTerminal();
 
         if (sp.length == 0) {
-            System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
-            waitTime(500);
+            quickType("Input was empty, please try again. (If you need help, enter \"help\")");
+            waitTime(2000);
             return getArgs();
         }
 
@@ -434,6 +469,27 @@ public class Logic {
         for (char c : this.output.toCharArray()) {
             System.out.print(c);
             waitTime(100);
+        }
+    }
+
+    private void quickType(String print) {
+        for (char c : print.toCharArray()) {
+            System.out.print(c);
+            waitTime(25);
+        }
+    }
+
+    private void loadingWheel() {
+        String[] animationFrames = { "|", "/", "-", "\\" };
+        int frame = 0;
+        int frameIndex = 0;
+        System.out.print("\033[1;1H");
+        while (frame < 15) {
+            System.out.print("\033[1;1H");
+            System.out.print(animationFrames[frameIndex]);
+            frameIndex = (frameIndex + 1) % animationFrames.length;
+            frame++;
+            waitTime(50);
         }
     }
 
