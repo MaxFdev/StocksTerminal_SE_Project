@@ -207,7 +207,7 @@ public class Logic {
      * @return checked flags
      */
     private char[] getFlags(String[] args) {
-        if (args[args.length - 1].startsWith("-") && args[args.length - 1].substring(1).matches("[chloprtv]")) {
+        if (args[args.length - 1].startsWith("-") && args[args.length - 1].substring(1).matches("[cehloprtv]")) {
             return args[args.length - 1].substring(1).toCharArray();
         } else if (args[args.length - 1].startsWith("-")) {
             clearTerminal();

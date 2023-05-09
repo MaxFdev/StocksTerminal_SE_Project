@@ -32,7 +32,7 @@ To simplify and organize the information-getting process for stock data.
 
 > How?
 
-1.  Run the program .jar file.
+1.  Run the program .jar file (or directly through program files).
 
 2.  make a call to the program using "stock" as the first item of your args.
 
@@ -42,29 +42,34 @@ To simplify and organize the information-getting process for stock data.
         as well as a short description of each, akin to this list.
 
         (b) "[stock_symbol(s)] [request(s) flag(s)]"
-        - executes the given command on the stock symbol(s) provided
-        - separate symbols and requests with a space. Example provided:
+            - executes the given command on the stock symbol(s) provided
+            - separate symbols and requests with a space. Example provided:
             "aapl amzn -pov" - fetches the price, open
             price, and volume for aapl and amzn (empty
             request status assumes current)
+            ---
+            request flags and their uses:
+                No specification / "" - assumes all other requests (same as "-cehloprtv")
+                (All the following go after a "-")
+                1. open / "o" - day's open price
+                2. high / "h" - day's high price
+                3. low / "l" - day's low price
+                4. price / "e" - current price
+                4. volume / "v" - stock volume
+                5. latest trading day / "t" - last day that trading     was available
+                6. previous close / "p" - the previous trading  day's closing price
+                7. change / "c" - change in price since day's open
+                8. change in percent / "r" - change in price since day's open represented as a percentage.
 
-        (c) request flags and their uses:
-            No specification / "" - assumes all other requests (same as "-chloprtv")
-            (All start with "-")
-            1. open / "o" - day's open price
-            2. high / "h" - day's high price
-            3. low / "l" - day's low price
-            4. volume / "v" - stock volume
-            5. latest trading day / "t" - last day that trading was available
-            6. previous close / "p" - the previous trading day's closing price
-            7. change / "c" - change in price since day's open
-            8. change in percent / "r" - change in price since day's open represented as a percentage.
+        (c) "clear" - clears the stock-history for refreshing data
 
-        (d) "clear" - clears the stock-history for refreshing data
+        (d) "refresh" - gets the last stocks (up to 10) and requests all information offered on them.
 
-        (e) "refresh" - gets the last stocks (up to 10) and requests all information offered on them.
+        (e) "remove [stock_symbol(s)]" - removes the listed stock(s) from the data storage units. No listed stock will just delete the most recent stock symbol added.
 
-        (f) "remove [stock_symbol(s)]" - removes the listed stock(s) from the data storage units. No listed stock will just delete the most recent stock symbol added.
+        (f) "history" - prints all stocks that have been requested that have not been removed.
+
+        (g) "Live [stock_symbol]" (capital "L") - gives a live feed of a specific stock.
 
 The ideal experience using this product is straightforward: use the "help" or read the code in order to understand the commands, then apply them as you wish.
 
@@ -72,10 +77,14 @@ The ideal experience using this product is straightforward: use the "help" or re
 
 > Ideas/Functionality:
 
--   Query; Commands to get data (specify wanted data)
--   Live; Live command (updates info every certain amount of time)
--   `List`; List (lists multiple stocks that are specified)
 -   Help; Help (get help)
+-   Query; Commands to get data (specify wanted data)
+-   List; List (lists multiple stocks that are specified)
+-   Clear; Clears stock cache
+-   Refresh; Updates prices for a certain amount of stocks
+-   Remove; Removes a stock from the cache
+-   History; lists all stocks ever requested
+-   Live; Live command (updates info every certain amount of time)
 
 > Stock data we can get:
 
