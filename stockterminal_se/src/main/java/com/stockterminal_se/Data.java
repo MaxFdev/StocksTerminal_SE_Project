@@ -12,7 +12,6 @@ public class Data {
         this.stockList = new ArrayList<Stock>();
     }
 
-<<<<<<< HEAD
     public ArrayList<Stock> getSaved() {
         ArrayList<Stock> returnList = new ArrayList<Stock>();
         for (Stock stock : this.stockHeap.getElements()) {
@@ -37,7 +36,8 @@ public class Data {
             }
             return -1;
         }
-=======
+    }
+    
     public Stock query(String ticker) {
 
     }
@@ -64,6 +64,6 @@ public class Data {
     
     public Stock live(Stock stock) {
         
->>>>>>> 8677321bd64fc39758904112460a3e30fae7539b
     }
+
 }
