@@ -41,29 +41,24 @@ To simplify and organize the information-getting process for stock data.
         (a) "help" - prints a list of available commands, requests, and options,
         as well as a short description of each, akin to this list.
 
-        (b) "[stock_symbol(s)] [live /or/ current] [requests(s)]" 
-        - executes the given command(s) on the stock symbol provided
-        - separate symbols and requests with commas. Example provided:
-            "aapl, amzn -pov" - fetches the price, open
+        (b) "[stock_symbol(s)] [request(s) flag(s)]"
+        - executes the given command on the stock symbol(s) provided
+        - separate symbols and requests with a space. Example provided:
+            "aapl amzn -pov" - fetches the price, open
             price, and volume for aapl and amzn (empty
             request status assumes current)
 
-        (c) requests and their uses:
-            1. no request / "" - assumes all other
-            requests
-            2. open / "o" - day's open price
-            3. high / "h" - day's high price
-            4. low / "l" - day's low price
-            5. volume / "v" - stock volume
-            6. latest trading day / "t" - last day that
-            trading was available
-            7. previous close / "p" - the previous
-            trading day's closing price
-            8. change / "c" - change in price since day's
-            open
-            9. change in percent / "r" - change in price
-            since day's open represented as a
-            percentage.
+        (c) request flags and their uses:
+            No specification / "" - assumes all other requests (same as "-chloprtv")
+            (All start with "-")
+            1. open / "o" - day's open price
+            2. high / "h" - day's high price
+            3. low / "l" - day's low price
+            4. volume / "v" - stock volume
+            5. latest trading day / "t" - last day that trading was available
+            6. previous close / "p" - the previous trading day's closing price
+            7. change / "c" - change in price since day's open
+            8. change in percent / "r" - change in price since day's open represented as a percentage.
 
         (d) "clear" - clears the stock-history for refreshing data
 
@@ -78,7 +73,6 @@ The ideal experience using this product is straightforward: use the "help" or re
 > Ideas/Functionality:
 
 -   Query; Commands to get data (specify wanted data)
-
 -   Live; Live command (updates info every certain amount of time)
 -   `List`; List (lists multiple stocks that are specified)
 -   Help; Help (get help)
