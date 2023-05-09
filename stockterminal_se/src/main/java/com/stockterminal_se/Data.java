@@ -5,7 +5,7 @@ import java.util.*;
 public class Data {
 
     MinHeap<Stock> stockHeap;
-    ArrayList<Stock> stockList;
+    List<Stock> stockList;
 
     public Data() {
         this.stockHeap = new MinHeap<Stock>();
@@ -42,7 +42,7 @@ public class Data {
 
     }
     
-    public ArrayList<Stock> query(String[] tickers) {
+    public List<Stock> query(String[] tickers) {
 
     }
     
@@ -58,7 +58,7 @@ public class Data {
 
     }
     
-    public ArrayList<Stock> history() {
+    public List<Stock> history() {
 
     }
     
