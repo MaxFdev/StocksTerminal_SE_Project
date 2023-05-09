@@ -79,7 +79,6 @@ The ideal experience using this product is straightforward: use the "help" or re
 
 -   Help; Help (get help)
 -   Query; Commands to get data (specify wanted data)
--   List; List (lists multiple stocks that are specified)
 -   Clear; Clears stock cache
 -   Refresh; Updates prices for a certain amount of stocks
 -   Remove; Removes a stock from the cache

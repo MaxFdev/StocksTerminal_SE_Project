@@ -1,23 +1,21 @@
 package com.stockterminal_se;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import com.stockterminal_se.Stock;
+import java.util.*;
 
-public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
-    protected Stock[] elements;
+public class MinHeap<Type extends Comparable<Type>> implements Iterable {
+    protected Type[] elements;
     protected int count = 0;
 
     public MinHeap() {
-        this.elements = (Stock[]) new Comparable[5];
+        this.elements = (Type[]) new Comparable[5];
     }
 
-    public void reHeapify(Stock element) {
+    public void reHeapify(Type element) {
         if (element == null) throw new NoSuchElementException();
         downHeap(getArrayIndex(element));
     }
 
-    protected int getArrayIndex(Stock element) {
+    protected int getArrayIndex(Type element) {
         if (isEmpty()) throw new NoSuchElementException("Heap Is Empty");
         if (element == null) throw new IllegalArgumentException();
         for (int index = 0; index < this.count + 1; index++) {
@@ -29,7 +27,7 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
     }
 
     protected void doubleArraySize() {
-        Stock[] tempArray = (Stock[]) new Comparable[this.elements.length * 2];
+        Type[] tempArray = (Type[]) new Comparable[this.elements.length * 2];
         for (int i = 0; i < this.elements.length; i++) {
             tempArray[i] = this.elements[i];
         }
@@ -44,14 +42,14 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
      * is elements[i] > elements[j]?
      */
     protected boolean isGreater(int i, int j) {
-        return ((com.stockterminal_se.Stock) this.elements[i]).compareTo((com.stockterminal_se.Stock) this.elements[j]) > 0;
+        return ((Type) this.elements[i]).compareTo((Type) this.elements[j]) > 0;
     }
 
     /**
      * swap the values stored at elements[i] and elements[j]
      */
     protected void swap(int i, int j) {
-        Stock temp = this.elements[i];
+        Type temp = this.elements[i];
         this.elements[i] = this.elements[j];
         this.elements[j] = temp;
     }
@@ -88,7 +86,7 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
         }
     }
 
-    public void insert(Stock x) {
+    public void insert(Type x) {
         // double size of array if necessary
         if (this.count >= this.elements.length - 1) {
             this.doubleArraySize();
@@ -99,11 +97,11 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
         this.upHeap(this.count);
     }
 
-    public Stock remove() {
+    public Type remove() {
         if (isEmpty()) {
             throw new NoSuchElementException("Heap is empty");
         }
-        Stock min = this.elements[1];
+        Type min = this.elements[1];
         //swap root with last, decrement count
         this.swap(1, this.count--);
         //move new root down as needed
@@ -113,8 +111,8 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
     }
 
     @Override
-    public Iterator<Stock> iterator() {
-        Iterator<Stock> it = new Iterator<Stock>() {
+    public Iterator<Type> iterator() {
+        Iterator<Type> it = new Iterator<Type>() {
             private int currentIndex = 0;
 
             @Override
@@ -123,7 +121,7 @@ public class MinHeap<com.stockterminal_se.Stock> implements Iterable {
             }
 
             @Override
-            public Stock next() {
+            public Type next() {
                 return elements[currentIndex++];
             }
         };

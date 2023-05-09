@@ -8,7 +8,18 @@ public class Logic {
     private Scanner argScanner;
     private String[] args;
     private char[] flags;
+    private Mode mode;
     private String output;
+
+    private enum Mode {
+        Help,
+        Query,
+        Clear,
+        Refresh,
+        Remove,
+        History,
+        Live
+    }
 
     /**
      * Basic constructor.
@@ -23,6 +34,7 @@ public class Logic {
      * Constructor with args passed in.
      * 
      * @param args
+     * 
      */
     public Logic(String[] args) {
         animateToStockInfo();
@@ -34,6 +46,7 @@ public class Logic {
      * Main method for if the program is called on its own.
      * 
      * @param args
+     * 
      */
     public static void main(String[] args) {
         if (args.length > 0) {
@@ -83,7 +96,7 @@ public class Logic {
         String[] animationFrames = { "|", "/", "-", "\\" };
         int frame = 0;
         int frameIndex = 0;
-        while (frame < 15) {
+        while (frame < 10) {
             System.out.print("\033[1;1H");
             System.out.print(animationFrames[frameIndex]);
             frameIndex = (frameIndex + 1) % animationFrames.length;
@@ -157,6 +170,10 @@ public class Logic {
      * This method continues running the program while nothing is going on.
      */
     private void continueProgram() {
+        this.args = null;
+        this.flags = null;
+        this.mode = null;
+        this.output = null;
         this.args = filter(getArgs());
         if (this.args == null) {
             continueProgram();
@@ -205,6 +222,7 @@ public class Logic {
      * 
      * @param args
      * @return checked flags
+     * 
      */
     private char[] getFlags(String[] args) {
         if (args[args.length - 1].startsWith("-") && args[args.length - 1].substring(1).matches("[cehloprtv]")) {
