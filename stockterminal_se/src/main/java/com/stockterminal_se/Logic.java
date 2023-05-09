@@ -168,11 +168,15 @@ public class Logic {
     private void start(String[] args) {
         clearTerminal();
 
-        if (args.length == 0) {
+        this.args = args;
+
+        if (this.args.length == 0) {
             System.out.println("Input was empty, please try again. (If you need help, enter \"help\")");
             waitTime(500);
         } else {
-            
+            checkMode(this.args);
+
+            runMode();
         }
 
         // finish
@@ -290,6 +294,16 @@ public class Logic {
         this.output = "";
     }
 
+    private void query(String[] tickers) { // finish
+        this.dataManager.query(tickers);
+        this.output = "";
+    }
+    
+    private void query(String ticker) { // finish
+        this.dataManager.query(ticker);
+        this.output = "";
+    }
+
     /*
      * <----------------------------------------------------------------------------------->
     */
@@ -301,7 +315,7 @@ public class Logic {
      * @return filtered args
      *
      */
-    private String[] filter(String[] args) {
+    private String[] filter(String[] args) { // fix
         ArrayList<String> tickersAndFlags = new ArrayList<String>();
         boolean badInput = args.length > 11 || args.length < 1 ? true : false;
         for (int index = 0; index < args.length && !badInput; index++) {
@@ -333,7 +347,7 @@ public class Logic {
      * @return checked flags
      * 
      */
-    private char[] getFlags(String[] args) {
+    private char[] getFlags(String[] args) { // fix
         if (args[args.length - 1].startsWith("-") && args[args.length - 1].substring(1).matches("[cehloprtv]")) {
             return args[args.length - 1].substring(1).toCharArray();
         } else if (args[args.length - 1].startsWith("-")) {
