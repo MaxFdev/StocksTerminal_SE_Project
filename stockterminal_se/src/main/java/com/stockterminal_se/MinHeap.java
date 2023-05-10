@@ -8,7 +8,7 @@ public class MinHeap<Type extends Comparable<Type>> {
     protected int count = 0;
 
     public MinHeap() {
-        this.elements = (Type[]) new Comparable[5];
+        this.elements = (Type[]) new Comparable[11];
     }
 
     public void reHeapify(Type element) {
@@ -27,13 +27,13 @@ public class MinHeap<Type extends Comparable<Type>> {
         throw new NoSuchElementException();
     }
 
-    private void doubleArraySize() {
-        Type[] tempArray = (Type[]) new Comparable[this.elements.length * 2];
-        for (int i = 0; i < this.elements.length; i++) {
-            tempArray[i] = this.elements[i];
-        }
-        this.elements = tempArray;
-    }
+    // private void doubleArraySize() {
+    //     Type[] tempArray = (Type[]) new Comparable[this.elements.length * 2];
+    //     for (int i = 0; i < this.elements.length; i++) {
+    //         tempArray[i] = this.elements[i];
+    //     }
+    //     this.elements = tempArray;
+    // }
 
     protected boolean isEmpty() {
         return this.count == 0;
@@ -90,7 +90,7 @@ public class MinHeap<Type extends Comparable<Type>> {
     public void insert(Type x) {
         // double size of array if necessary
         if (this.count >= this.elements.length - 1) {
-            this.doubleArraySize();
+            this.remove();
         }
         //add x to the bottom of the heap
         this.elements[++this.count] = x;
@@ -100,7 +100,7 @@ public class MinHeap<Type extends Comparable<Type>> {
 
     public Type remove() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Heap is empty");
+            return null;
         }
         Type min = this.elements[1];
         //swap root with last, decrement count
@@ -111,7 +111,9 @@ public class MinHeap<Type extends Comparable<Type>> {
         return min;
     }
 
-    protected Type[] getElements() {
-        return this.elements;
-    }
+    // protected Type[] getElements() {
+    //     Type[] elems = (Type[]) new Comparable[this.elements.length];
+    //     System.arraycopy(this.elements, 0, elems, 0, this.elements.length);
+    //     return elems;
+    // }
 }

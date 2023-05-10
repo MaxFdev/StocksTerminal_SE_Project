@@ -239,9 +239,8 @@ public class Logic {
 
     private void inputError() {
         clearTerminal();
-        this.output = "Input was invalid! Please try again when prompted. (enter \"help\" for help or \"quit\" to exit)";
-        animateOutput();
-        waitTime(1000);
+        quickType("Input was invalid! Please try again when prompted. (enter \"help\" for help or \"quit\" to exit)");
+        waitTime(500);
     }
 
     private void help() {
@@ -273,7 +272,7 @@ public class Logic {
         "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
                         "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock that has already been loaded.";
         superQuickType(help);
-        waitTime(10000);
+        waitTime(15000);
     }
 
     private void clear() {
@@ -287,13 +286,18 @@ public class Logic {
     private void refresh() {
         clearTerminal();
         List<Stock> stocks = this.dataManager.refresh();
-        this.output = "Data has been updated, here is all the new data:";
-        animateOutput();
-        for (Stock stock : stocks) {
-            waitTime(50);
-            quickType("\n" + stock.toString());
+        if (stocks != null) {
+            this.output = "Data has been updated, here is all the new data:";
+            animateOutput();
+            for (Stock stock : stocks) {
+                waitTime(50);
+                quickType("\n\n" + stock.toString());
+            }
+            waitTime(2000 * stocks.size());
+        } else {
+            quickType("Data was unable to be refreshed.");
+            waitTime(500);
         }
-        waitTime(10000);
     }
 
     private void history() {
@@ -327,12 +331,19 @@ public class Logic {
     private void live(String ticker) {
         boolean stayLive = true;
         int refreshes = 0;
-        while (stayLive) {
-            refreshes++;
-            clearTerminal();
-            System.out.print(this.dataManager.live(ticker).toString());
-            stayLive = refreshes == 60 ? false : true;
-            waitTime(1005);
+        if (this.dataManager.live(ticker) == null) {
+            quickType("Stock has not been queried before, please query before going live.");
+            waitTime(500);
+        } else {
+            while (stayLive) {
+                refreshes++;
+                clearTerminal();
+                Stock stock = this.dataManager.live(ticker);
+                System.out.print(stock.symbol().toUpperCase() + "\n"+
+                stock.price() + "\n" + stock.changePercent() + "\n" + stock.volume());
+                stayLive = refreshes == 60 ? false : true;
+                waitTime(1005);
+            }
         }
     }
 
@@ -362,6 +373,7 @@ public class Logic {
             for (Stock stock : stocks) {
                 waitTime(50);
                 quickType(stock.toString());
+                System.out.println("\n");
             }
             waitTime(2000 * stocks.size());
         }
@@ -389,6 +401,7 @@ public class Logic {
             for (Stock stock : stocks) {
                 waitTime(50);
                 quickType(getFlagData(stock));
+                System.out.println("\n");
             }
             waitTime(2000 * stocks.size());
         }
@@ -407,7 +420,7 @@ public class Logic {
     }
 
     private String getFlagData(Stock stock) {
-        String out = stock.symbol() + "\n";
+        String out = stock.symbol().toUpperCase() + ":\n";
         for (char c : this.flags) {
             switch (c) {
                 case 'c' -> {
@@ -465,17 +478,18 @@ public class Logic {
                             this.mode = Mode.Query;
                             return;
                         }
-                    } else{
+                    } else {
                         badInput = true;
                     }
                 } else if (args[index].startsWith("-") && index == args.length - 1) {
                     getFlags(args[index]);
                     this.args = tickersAndFlags.toArray(new String[tickersAndFlags.size()]);
-                    this.mode = Mode.Query;
                     return;
                 } else {
                     badInput = true;
                 }
+            } else {
+                badInput = true;
             }
         }
         this.mode = Mode.Error;
@@ -488,7 +502,7 @@ public class Logic {
      * 
      */
     private void getFlags(String arg) {
-        if (arg.startsWith("-") && arg.substring(1).matches("[cehloprtv]+")) {
+        if (arg.startsWith("-") && arg.substring(1).matches("[cehloprtv]")) {
             this.flags = arg.substring(1).toCharArray();
         } else {
             this.mode = Mode.Error;
@@ -540,7 +554,7 @@ public class Logic {
     private void animateOutput() {
         for (char c : this.output.toCharArray()) {
             System.out.print(c);
-            waitTime(50);
+            waitTime(40);
         }
     }
 
@@ -554,7 +568,7 @@ public class Logic {
     private void superQuickType(String print) {
         for (char c : print.toCharArray()) {
             System.out.print(c);
-            waitTime(10);
+            waitTime(8);
         }
     }
 

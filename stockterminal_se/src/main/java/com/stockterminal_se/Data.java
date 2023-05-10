@@ -1,5 +1,7 @@
 package com.stockterminal_se;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Data {
@@ -25,6 +27,15 @@ public class Data {
         Stock returnStock = live(ticker);
         if (returnStock == null) {
             returnStock = createNewStock(ticker);
+            this.stockHeap.insert(returnStock);
+            this.stockList.add(returnStock);
+        } else {
+            try {
+                returnStock.refresh(this.apiKey);
+                this.stockHeap.reHeapify(returnStock);
+            } catch (Exception e) {
+                return null;
+            }
         }
         return returnStock;
     }
@@ -40,11 +51,17 @@ public class Data {
     public List<Stock> query(String[] tickers) {
         List<Stock> queryList = new ArrayList<Stock>();
         for (String ticker : tickers) {
-            if (get(ticker) != null) {
-                queryList.add(get(ticker));
+            Stock stock = query(ticker);
+            if (stock != null) {
+                queryList.add(stock);
+            } else {
+                return null;
             }
         }
-        if (queryList.isEmpty()) return null;
+        if (queryList.isEmpty()) {
+            return null;
+        }
+        queryList.sort(comp);
         return Collections.unmodifiableList(queryList);
     }
 
@@ -84,18 +101,24 @@ public class Data {
      * 
      */
     public List<Stock> refresh() {
-        List<Stock> returnList = new ArrayList<Stock>();
         if (this.stockHeap.isEmpty()) return null;
-        for (Stock stock : this.stockHeap.getElements()) {
-            try {
-                stock.refresh(this.apiKey);
-                returnList.add(stock);
+        HashSet<Stock> stocks = new HashSet<Stock>();
+        for (int i = 0; i < 11; i++) {
+            Stock stock = this.stockHeap.remove();
+            if (stock != null) {
+                try {
+                    stock.refresh(this.apiKey);
+                } catch (IOException e) {}
+                stocks.add(stock);
+                this.stockHeap.insert(stock);
             }
-            catch (Exception e) {
-            }// just continue along in the heap
         }
-        if (returnList.isEmpty()) return null;
-        return Collections.unmodifiableList(returnList);
+        if (stocks.isEmpty()) {
+            return null;
+        }
+        ArrayList<Stock> s = new ArrayList<Stock>(stocks);
+        s.sort(comp);
+        return Collections.unmodifiableList(s);
     }
     
     /**
