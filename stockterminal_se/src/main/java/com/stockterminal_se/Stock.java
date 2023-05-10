@@ -93,7 +93,6 @@ public class Stock implements Comparable<Stock> {
         indexes are based on testing the split of information
         received in call
         */
-        this.ticker = separateAspects[5];
         this.open = separateAspects[9];
         this.high = separateAspects[13];
         this.low = separateAspects[17];
@@ -168,5 +167,4 @@ public class Stock implements Comparable<Stock> {
     protected String changePercent() {
         return this.changePercent;
     }
-
 }

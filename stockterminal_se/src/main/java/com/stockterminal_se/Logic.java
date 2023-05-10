@@ -271,7 +271,7 @@ public class Logic {
         "(d) \"refresh\" - gets the last stocks (up to 10) and requests all information offered on them." + "\n\n" +
         "(e) \"remove [stock_symbol]\" - removes the given stock from the data storage units." + "\n\n" +
         "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
-                        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
+                        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock that has already been loaded.";
         superQuickType(help);
         waitTime(10000);
     }

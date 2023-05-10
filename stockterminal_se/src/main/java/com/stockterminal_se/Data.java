@@ -12,34 +12,6 @@ public class Data {
         this.stockHeap = new MinHeap<Stock>();
         this.stockList = new ArrayList<Stock>();
     }
-
-    /**
-     * @return the list of stocks in cache, organized alphabetically
-     */
-    public ArrayList<Stock> getSaved() {
-        ArrayList<Stock> returnList = new ArrayList<Stock>();
-        for (Stock stock : this.stockHeap.getElements()) {
-            returnList.add(stock);
-        }
-        Collections.sort(returnList, new StockNameComp());
-        return returnList;
-    }
-
-    /**
-     * takes the given ticker string and finds a stock for it
-     * @param ticker
-     * @return the Stock associated with the string if it exists,
-     * otherwise return null
-     */
-    private Stock get(String ticker) {
-        if (this.stockList.isEmpty()) return null;
-        for (Stock stock : this.stockList) { // checking for existing stock
-            if (stock.symbol().equals(ticker))  {
-                return stock;
-            }
-        }
-        return null;
-    }
     
     /**
      * This method takes a ticker as a param and returns an updated stock object.
@@ -47,6 +19,7 @@ public class Data {
      * @param ticker
      * @return Stock for given symbol if exists or was otherwise instantiated properly,
      * null otherwise
+     * 
      */
     public Stock query(String ticker) {
         Stock returnStock = live(ticker);
@@ -55,24 +28,6 @@ public class Data {
         }
         return returnStock;
     }
-
-    /**
-     * 
-     * @param ticker
-     * @return the newly-created stock, or null if something went awry while trying
-     */
-    private Stock createNewStock(String ticker) {
-        Stock newStock; // otherwise creating a new stock
-        try {
-            newStock = new Stock(ticker, this.apiKey);
-            this.stockHeap.insert(newStock);
-            this.stockList.add(newStock);
-        }
-        catch (Exception e) {
-            return null;
-        }
-        return newStock;
-    }
     
     /**
      * This method is the same except it deals with multiple stocks.
@@ -80,6 +35,7 @@ public class Data {
      * @param tickers
      * @return returns a List popualted with all existing symbols (updated),
      * and null if none of them exists
+     * 
      */
     public List<Stock> query(String[] tickers) {
         List<Stock> queryList = new ArrayList<Stock>();
@@ -90,6 +46,26 @@ public class Data {
         }
         if (queryList.isEmpty()) return null;
         return Collections.unmodifiableList(queryList);
+    }
+
+    /**
+     * Creates a new stock.
+     * 
+     * @param ticker
+     * @return the newly-created stock, or null if something went awry while trying
+     * 
+     */
+    private Stock createNewStock(String ticker) {
+        Stock newStock;
+        try {
+            newStock = new Stock(ticker, this.apiKey);
+            this.stockHeap.insert(newStock);
+            this.stockList.add(newStock);
+        }
+        catch (Exception e) {
+            return null;
+        }
+        return newStock;
     }
     
     /**
@@ -105,6 +81,7 @@ public class Data {
      * 
      * @return a list of ONLY the refreshed stocks, null if none of
      * the items could be refreshed or there weren't any stocks in the heap.
+     * 
      */
     public List<Stock> refresh() {
         List<Stock> returnList = new ArrayList<Stock>();
@@ -126,6 +103,7 @@ public class Data {
      * 
      * @param ticker
      * @return true if stock was removed, false if no such stock existed in Data
+     * 
      */
     public boolean remove(String ticker) {
         if (get(ticker) != null) {
@@ -142,10 +120,11 @@ public class Data {
      * 
      * @return an unmodifiable list of all stocks ever called, organized by stock
      * ticker symbol alphabetical order
+     * 
      */
     public List<Stock> history() {
         List<Stock> sortedList = this.stockList;
-        Collections.sort(sortedList, new StockNameComp());
+        Collections.sort(sortedList, comp);
         return Collections.unmodifiableList(sortedList);
     }
     
@@ -155,9 +134,12 @@ public class Data {
      * @param ticker
      * @return the stock after refreshing, null if the stock doesn't exist
      * or the query fails
+     * 
      */
     public Stock live(String ticker) {
-        if (this.stockList.isEmpty()) return null;
+        if (this.stockList.isEmpty()) {
+            return null;
+        }
         for (Stock stock : this.stockList) {
             if (stock.symbol().equals(ticker))  {
                 try {
@@ -173,17 +155,30 @@ public class Data {
     }
 
     /**
-     * This comparator uses the name of the ticker symbol as the comparing factor
+     * This is a compatator for stocks for sorting by name
      */
-    class StockNameComp implements Comparator<Stock> {
-
-        private StockNameComp() {
-        }
-
+    private Comparator<Stock> comp = new Comparator<Stock>() {
         @Override
         public int compare(Stock one, Stock two) {
             return one.symbol().compareTo(two.symbol());
         }
-    }
+    };
 
+    /**
+     * takes the given ticker string and finds a stock for it
+     * 
+     * @param ticker
+     * @return the Stock associated with the string if it exists,
+     * otherwise return null
+     * 
+     */
+    private Stock get(String ticker) {
+        if (this.stockList.isEmpty()) return null;
+        for (Stock stock : this.stockList) { // checking for existing stock
+            if (stock.symbol().equals(ticker))  {
+                return stock;
+            }
+        }
+        return null;
+    }
 }
