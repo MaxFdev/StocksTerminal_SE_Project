@@ -27,8 +27,6 @@ public class Data {
         Stock returnStock = live(ticker);
         if (returnStock == null) {
             returnStock = createNewStock(ticker);
-            this.stockHeap.insert(returnStock);
-            this.stockList.add(returnStock);
         } else {
             try {
                 returnStock.refresh(this.apiKey);
@@ -51,11 +49,12 @@ public class Data {
     public List<Stock> query(String[] tickers) {
         List<Stock> queryList = new ArrayList<Stock>();
         for (String ticker : tickers) {
-            Stock stock = query(ticker);
-            if (stock != null) {
+            try {
+                Stock stock = createNewStock(ticker);
                 queryList.add(stock);
-            } else {
-                return null;
+            }
+            catch (IllegalArgumentException e) {
+                // continue on
             }
         }
         if (queryList.isEmpty()) {

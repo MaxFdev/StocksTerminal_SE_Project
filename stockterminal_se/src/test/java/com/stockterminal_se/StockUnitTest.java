@@ -195,7 +195,6 @@ public class StockUnitTest {
         stockList.add(testStock5);
         List<Stock> sortedList = stockList;
         Collections.sort(sortedList, comp);
-        System.out.println(testData.history());
         assertEquals(testData.history(), sortedList);
         testData.clear();
         assertEquals(testData.history(), new ArrayList<Stock>());
