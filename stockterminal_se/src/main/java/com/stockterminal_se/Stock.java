@@ -34,11 +34,6 @@ public class Stock implements Comparable<Stock> {
         setUseTime();
     }
 
-    @Override
-    public String toString() {
-        return this.allData;
-    }
-
     protected void refresh(String apiKey) throws IOException {
         String rawData = makeCall(apiKey); // creates a String of ALL data
         setVariables(rawData);
@@ -56,11 +51,6 @@ public class Stock implements Comparable<Stock> {
 
     public long getLastUseTime() {
         return this.lastUseTime;
-    }
-
-    @Override
-    public int compareTo(Stock o) {
-        return (this.lastUseTime < o.getLastUseTime()) ? -1 : ((this.lastUseTime == o.getLastUseTime()) ? 0: 1);
     }
 
 
@@ -166,5 +156,25 @@ public class Stock implements Comparable<Stock> {
 
     protected String changePercent() {
         return this.changePercent;
+    }
+
+    //Overridden Methods below
+
+    @Override
+    public String toString() {
+        return this.allData;
+    }
+
+    @Override
+    public int compareTo(Stock o) {
+        return (this.lastUseTime < o.getLastUseTime()) ? -1 : ((this.lastUseTime == o.getLastUseTime()) ? 0: 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Stock)) return false;
+        Stock oStock = (Stock) o;
+        return (this.ticker.equals(oStock.symbol()) && this.allData.equals(oStock.allData()));
     }
 }
