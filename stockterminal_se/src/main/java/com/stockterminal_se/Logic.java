@@ -81,9 +81,9 @@ public class Logic {
         "\\__ \\|  _|/ _ \\/ _|| / /  | |  / -_)| '_|| '  \\ | || ' \\ / _` || |"+"\n"+
         "|___/ \\__|\\___/\\__||_\\_\\  |_|  \\___||_|  |_|_|_||_||_||_|\\__/_||_|";
         
-        System.out.println("\u001B[32m" + logo + "\n");
+        superQuickType("\u001B[32m" + logo + "\n\n");
 
-        waitTime(500);
+        waitTime(1000);
 
         String start = "Welcome to StockTerminal-SE!\nEnter commands when prompted (or \"help\" for help).";
         for (char c : start.toCharArray()) {
@@ -96,7 +96,7 @@ public class Logic {
             waitTime(10);
         }
         
-        waitTime(5000);
+        waitTime(3000);
 
         clearTerminal();
 
@@ -272,7 +272,7 @@ public class Logic {
         "(e) \"remove [stock_symbol]\" - removes the given stock from the data storage units." + "\n\n" +
         "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
                         "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock.";
-        quickType(help);
+        superQuickType(help);
         waitTime(10000);
     }
 
@@ -299,13 +299,18 @@ public class Logic {
     private void history() {
         clearTerminal();
         List<Stock> stocks = this.dataManager.history();
-        this.output = "Here are all the stocks ever requested:";
-        animateOutput();
-        for (Stock stock : stocks) {
-            waitTime(10);
-            quickType("\n" + stock.symbol());
-        }
-        waitTime(1000);
+        if (stocks.size() > 0) {
+            this.output = "Here are all the stocks ever requested:";
+            animateOutput();
+            for (Stock stock : stocks) {
+                waitTime(10);
+                quickType("\n" + stock.symbol());
+            }
+            waitTime(5000);
+        } else {
+            quickType("History was empty, try searching for a stock.");
+            waitTime(500);
+        }        
     }
 
     private void remove(String ticker) {
@@ -313,7 +318,7 @@ public class Logic {
         if (this.dataManager.remove(ticker)) {
             this.output = ticker + " was removed from data.";
         } else {
-            this.output = ticker + "was not in data.";
+            this.output = ticker + " was not in data.";
         }
         animateOutput();
         waitTime(1000);
@@ -339,7 +344,11 @@ public class Logic {
                 query(this.args);
             }
         } else {
-
+            if (this.args.length == 1) {
+                queryf(this.args[0]);
+            } else {
+                queryf(this.args);
+            }
         }
     }
 
@@ -354,7 +363,7 @@ public class Logic {
                 waitTime(50);
                 quickType(stock.toString());
             }
-            waitTime(1000);
+            waitTime(2000 * stocks.size());
         }
     }
     
@@ -366,8 +375,71 @@ public class Logic {
             animateOutput();
         } else {
             quickType(stock.toString());
-            waitTime(1000);
+            waitTime(5000);
         }
+    }
+
+    private void queryf(String[] tickers) {
+        List<Stock> stocks = this.dataManager.query(tickers);
+        if (stocks == null) {
+            clearTerminal();
+            this.output = "There were some unexpected problems. Please try again.";
+            animateOutput();
+        } else {
+            for (Stock stock : stocks) {
+                waitTime(50);
+                quickType(getFlagData(stock));
+            }
+            waitTime(2000 * stocks.size());
+        }
+    }
+
+    private void queryf(String ticker) {
+        Stock stock = this.dataManager.query(ticker);
+        if (stock == null) {
+            clearTerminal();
+            this.output = "There were some unexpected problems. Please try again.";
+            animateOutput();
+        } else {
+            quickType(getFlagData(stock));
+            waitTime(5000);
+        }
+    }
+
+    private String getFlagData(Stock stock) {
+        String out = stock.symbol() + "\n";
+        for (char c : this.flags) {
+            switch (c) {
+                case 'c' -> {
+                    out += stock.changeNum() + "\n";
+                }
+                case 'e' -> {
+                    out += stock.price() + "\n";
+                }
+                case 'h' -> {
+                    out += stock.high() + "\n";
+                }
+                case 'l' -> {
+                    out += stock.low() + "\n";
+                }
+                case 'o' -> {
+                    out += stock.open() + "\n";
+                }
+                case 'p' -> {
+                    out += stock.prevClose() + "\n";
+                }
+                case 'r' -> {
+                    out += stock.changePercent() + "\n";
+                }
+                case 't' -> {
+                    out += stock.latestTrading() + "\n";
+                }
+                case 'v' -> {
+                    out += stock.volume() + "\n";
+                }
+            }
+        }
+        return out;
     }
 
     /*
@@ -431,7 +503,7 @@ public class Logic {
      * 
      */
     private boolean check(String arg) {
-        return (arg.length() > 1 && arg.length() < 5 && arg.matches("[a-z]+")) ? true : false;
+        return (arg.length() > 0 && arg.length() < 5 && arg.matches("[a-z]+")) ? true : false;
     }
     
     /**
@@ -443,7 +515,7 @@ public class Logic {
     private String[] getArgs() {
         clearTerminal();
 
-        quickType("Please enter commands bellow.\n");
+        quickType("Please enter commands below.\n");
 
         this.argScanner = new Scanner(System.in);
         String in = this.argScanner.nextLine();
@@ -468,7 +540,7 @@ public class Logic {
     private void animateOutput() {
         for (char c : this.output.toCharArray()) {
             System.out.print(c);
-            waitTime(100);
+            waitTime(50);
         }
     }
 
@@ -476,6 +548,13 @@ public class Logic {
         for (char c : print.toCharArray()) {
             System.out.print(c);
             waitTime(25);
+        }
+    }
+
+    private void superQuickType(String print) {
+        for (char c : print.toCharArray()) {
+            System.out.print(c);
+            waitTime(10);
         }
     }
 
