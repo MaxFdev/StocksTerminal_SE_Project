@@ -50,7 +50,11 @@ public class Data {
         List<Stock> queryList = new ArrayList<Stock>();
         for (String ticker : tickers) {
             try {
-                Stock stock = createNewStock(ticker);
+                Stock stock;
+                if (get(ticker) == null) {
+                    stock = createNewStock(ticker);
+                }
+                stock = get(ticker);
                 queryList.add(stock);
             }
             catch (IllegalArgumentException e) {
