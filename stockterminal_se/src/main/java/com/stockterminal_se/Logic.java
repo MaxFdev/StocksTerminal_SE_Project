@@ -11,6 +11,7 @@ public class Logic {
     private Mode mode;
     private String output;
     private boolean end;
+    private int textTime;
 
     private enum Mode {
         Error,
@@ -26,8 +27,9 @@ public class Logic {
 
     /**
      * Basic constructor.
-     */    
+     */
     public Logic() {
+        this.textTime = 10000;
         animateStartUp();
         this.dataManager = new Data();
         this.end = false;
@@ -51,7 +53,7 @@ public class Logic {
             continueProgram();
         }
     }
-    
+
     /**
      * Main method for if the program is called on its own.
      * 
@@ -75,12 +77,11 @@ public class Logic {
 
         waitTime(500);
 
-        String logo = 
-        " ___  _             _    _____                   _              _ " +"\n"+
-        "/ __|| |_  ___  __ | |__|_   _| ___  _ _  _ __  (_) _ _   __ _ | |"+"\n"+
-        "\\__ \\|  _|/ _ \\/ _|| / /  | |  / -_)| '_|| '  \\ | || ' \\ / _` || |"+"\n"+
-        "|___/ \\__|\\___/\\__||_\\_\\  |_|  \\___||_|  |_|_|_||_||_||_|\\__/_||_|";
-        
+        String logo = " ___  _             _    _____                   _              _ " + "\n" +
+                "/ __|| |_  ___  __ | |__|_   _| ___  _ _  _ __  (_) _ _   __ _ | |" + "\n" +
+                "\\__ \\|  _|/ _ \\/ _|| / /  | |  / -_)| '_|| '  \\ | || ' \\ / _` || |" + "\n" +
+                "|___/ \\__|\\___/\\__||_\\_\\  |_|  \\___||_|  |_|_|_||_||_||_|\\__/_||_|";
+
         superQuickType("\u001B[32m" + logo + "\n\n");
 
         waitTime(1000);
@@ -95,7 +96,7 @@ public class Logic {
             }
             waitTime(10);
         }
-        
+
         waitTime(3000);
 
         clearTerminal();
@@ -119,7 +120,7 @@ public class Logic {
         } else {
             checkMode(this.args);
         }
-        
+
         runMode();
     }
 
@@ -228,10 +229,11 @@ public class Logic {
         loadingWheel();
         clearTerminal();
     }
-    
+
     /*
-     * <-----| These methods manage the output and make calls to preform operations |----->
-    */
+     * <-----| These methods manage the output and make calls to preform operations
+     * |----->
+     */
 
     private void quit() {
         this.end = true;
@@ -245,32 +247,34 @@ public class Logic {
 
     private void help() {
         clearTerminal();
-        String help = 
-        "(a) \"help\" - prints a list of available commands, requests, and options,\n as well as a short description of each, akin to this list." + "\n\n" +
-        "(b) \"[stock_symbol(s, up to 10)] [request(s) flag(s)]\"" + "\n" +
-        "    - executes the given command on the stock symbol(s) provided" + "\n" +
-        "    - separate symbols and requests with a space. Example provided:" + "\n" +
-        "    \"aapl amzn -pov\" - fetches the price, open" + "\n" +
-        "    price, and volume for aapl and amzn (empty" + "\n" +
-        "    request status assumes current)" + "\n" +
-        "    ---" + "\n" +
-        "    request flags and their uses:" + "\n" +
-        "        No specification / \"\" - assumes all other requests (same as \"-cehloprtv\")" + "\n" +
-        "        (All the following go after a \"-\")" + "\n" +
-        "        1. open / \"o\" - day's open price" + "\n" +
-        "        2. high / \"h\" - day's high price" + "\n" +
-        "        3. low / \"l\" - day's low price" + "\n" +
-        "        4. price / \"e\" - current price" + "\n" +
-        "        4. volume / \"v\" - stock volume" + "\n" +
-        "        5. latest trading day / \"t\" - last day that trading     was available" + "\n" +
-        "        6. previous close / \"p\" - the previous trading  day's closing price" + "\n" +
-        "        7. change / \"c\" - change in price since day's open" + "\n" +
-        "        8. change in percent / \"r\" - change in price since day's open represented as a percentage." + "\n" +
-        "(c) \"clear\" - clears the stock-history for refreshing data" + "\n\n" +
-        "(d) \"refresh\" - gets the last stocks (up to 10) and requests all information offered on them." + "\n\n" +
-        "(e) \"remove [stock_symbol]\" - removes the given stock from the data storage units." + "\n\n" +
-        "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
-                        "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock that has already been loaded.";
+        String help = "(a) \"help\" - prints a list of available commands, requests, and options,\n as well as a short description of each, akin to this list."
+                + "\n\n" +
+                "(b) \"[stock_symbol(s, up to 10)] [request(s) flag(s)]\"" + "\n" +
+                "    - executes the given command on the stock symbol(s) provided" + "\n" +
+                "    - separate symbols and requests with a space. Example provided:" + "\n" +
+                "    \"aapl amzn -pov\" - fetches the price, open" + "\n" +
+                "    price, and volume for aapl and amzn (empty" + "\n" +
+                "    request status assumes current)" + "\n" +
+                "    ---" + "\n" +
+                "    request flags and their uses:" + "\n" +
+                "        No specification / \"\" - assumes all other requests (same as \"-cehloprtv\")" + "\n" +
+                "        (All the following go after a \"-\")" + "\n" +
+                "        1. open / \"o\" - day's open price" + "\n" +
+                "        2. high / \"h\" - day's high price" + "\n" +
+                "        3. low / \"l\" - day's low price" + "\n" +
+                "        4. price / \"e\" - current price" + "\n" +
+                "        4. volume / \"v\" - stock volume" + "\n" +
+                "        5. latest trading day / \"t\" - last day that trading     was available" + "\n" +
+                "        6. previous close / \"p\" - the previous trading  day's closing price" + "\n" +
+                "        7. change / \"c\" - change in price since day's open" + "\n" +
+                "        8. change in percent / \"r\" - change in price since day's open represented as a percentage."
+                + "\n" +
+                "(c) \"clear\" - clears the stock-history for refreshing data" + "\n\n" +
+                "(d) \"refresh\" - gets the last stocks (up to 10) and requests all information offered on them."
+                + "\n\n" +
+                "(e) \"remove [stock_symbol]\" - removes the given stock from the data storage units." + "\n\n" +
+                "(f) \"history\" - prints all stocks that have been requested that have not been removed." + "\n\n" +
+                "(g) \"Live [stock_symbol]\" (capital \"L\") - gives a live feed of a specific stock that has already been loaded.";
         superQuickType(help);
         waitTime(15000);
     }
@@ -314,7 +318,7 @@ public class Logic {
         } else {
             quickType("History was empty, try searching for a stock.");
             waitTime(500);
-        }        
+        }
     }
 
     private void remove(String ticker) {
@@ -339,8 +343,8 @@ public class Logic {
                 refreshes++;
                 clearTerminal();
                 Stock stock = this.dataManager.live(ticker);
-                System.out.print(stock.symbol().toUpperCase() + "\n"+
-                stock.price() + "\n" + stock.changePercent() + "\n" + stock.volume());
+                System.out.print(stock.symbol().toUpperCase() + "\n" +
+                        stock.price() + "\n" + stock.changePercent() + "\n" + stock.volume());
                 stayLive = refreshes == 60 ? false : true;
                 waitTime(1005);
             }
@@ -378,7 +382,7 @@ public class Logic {
             waitTime(2000 * stocks.size());
         }
     }
-    
+
     private void query(String ticker) {
         Stock stock = this.dataManager.query(ticker);
         if (stock == null) {
@@ -456,9 +460,10 @@ public class Logic {
     }
 
     /*
-     * <----------------------------------------------------------------------------------->
-    */
-    
+     * <----------------------------------------------------------------------------
+     * ------->
+     */
+
     /**
      * Takes in unchecked args and makes sure they are all valid.
      * 
@@ -494,7 +499,7 @@ public class Logic {
         }
         this.mode = Mode.Error;
     }
-    
+
     /**
      * Checks for flags.
      * 
@@ -519,9 +524,10 @@ public class Logic {
     private boolean check(String arg) {
         return (arg.length() > 0 && arg.length() < 5 && arg.matches("[a-z]+")) ? true : false;
     }
-    
+
     /**
-     * This method is called on startup to get the first args if they are not provided.
+     * This method is called on startup to get the first args if they are not
+     * provided.
      * 
      * @return String[] of args
      * 
@@ -539,7 +545,7 @@ public class Logic {
         } else {
             sp = new String[0];
         }
-        
+
         clearTerminal();
 
         if (sp.length == 0) {
@@ -566,10 +572,19 @@ public class Logic {
     }
 
     private void superQuickType(String print) {
+        int ticks = generateTickAmount(print); // or #generatetickamount
         for (char c : print.toCharArray()) {
             System.out.print(c);
-            waitTime(8);
+            waitTime(ticks);
         }
+    }
+
+    private int generateTickAmount(String print) {
+        int ticksPerSecond = Math.round(this.textTime / print.length());
+        if (ticksPerSecond <= 1) {
+            return 1;
+        }
+        return ticksPerSecond;
     }
 
     private void loadingWheel() {
@@ -593,7 +608,7 @@ public class Logic {
         this.output = null;
         this.mode = null;
     }
-    
+
     private void clearTerminal() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
