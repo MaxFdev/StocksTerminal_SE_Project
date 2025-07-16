@@ -1,4 +1,4 @@
-Image: /images/projects/StockTermianl.png
+Image: /images/projects/StockTerminal.png
 Rank: 1
 color: #00ffa2
 
